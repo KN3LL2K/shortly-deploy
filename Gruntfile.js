@@ -121,5 +121,8 @@ module.exports = function(grunt) {
     'shell:prodServer'
   ]);
 
+  grunt.registerTask('start', [
+    'nodemon'
+  ]);
 
 };
