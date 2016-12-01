@@ -23,7 +23,10 @@ module.exports = function(grunt) {
 
     nodemon: {
       dev: {
-        script: '--watch public server.js'
+        script: 'server.js',
+        options: {
+          watch: ['public']
+        }
       }
     },
 
