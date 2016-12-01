@@ -3,6 +3,13 @@ module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     concat: {
+      options: {
+        separator: ';',
+      },
+      dist: {
+        src: ['public/client/**/*.js'],
+        dest: 'public/dist/client.js',
+      },
     },
 
     mochaTest: {
@@ -21,15 +28,33 @@ module.exports = function(grunt) {
     },
 
     uglify: {
+      my_target: {
+        files: {
+          'public/dist/client.min.js': ['public/dist/client.js']
+        }
+      }
     },
 
+    clean: ['public/dist'],
+
+
     eslint: {
-      target: [
-        // Add list of files to lint here
-      ]
+      // options: {
+      //   format: require('/node_modules/eslint-config-hackreactor/index.js')
+      // },
+      target: ['public/dist/client.js']
     },
 
     cssmin: {
+      options: {
+        shorthandCompacting: false,
+        roundingPrecision: -1
+      },
+      target: {
+        files: {
+          'public/style.min.css': ['public/style.css']
+        }
+      }
     },
 
     watch: {
@@ -51,6 +76,7 @@ module.exports = function(grunt) {
 
     shell: {
       prodServer: {
+        command: 'git push live master'
       }
     },
   });
@@ -59,6 +85,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-cssmin');
+  grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-eslint');
   grunt.loadNpmTasks('grunt-mocha-test');
   grunt.loadNpmTasks('grunt-shell');
@@ -77,6 +104,7 @@ module.exports = function(grunt) {
   ]);
 
   grunt.registerTask('build', [
+    'test', 'cssmin', 'concat', 'uglify'
   ]);
 
   grunt.registerTask('upload', function(n) {
@@ -89,6 +117,8 @@ module.exports = function(grunt) {
 
   grunt.registerTask('deploy', [
     // add your deploy tasks here
+    'build',
+    'shell:prodServer'
   ]);
 
 
